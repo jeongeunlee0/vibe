@@ -11,3 +11,6 @@ AI 부트캠프  Vault/
 .vercel
 .claude/
 node_modules/
+
+.vercel
+.env*
