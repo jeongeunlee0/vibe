@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제주 관광지 지도</title>
+    <!-- Leaflet (지도 라이브러리) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: "Malgun Gothic", sans-serif; display: flex; height: 100vh; background: #fff; color: #222; }
+        #side { width: 320px; display: flex; flex-direction: column; border-right: 1px solid #ddd; }
+        #side header { padding: 12px; border-bottom: 1px solid #ddd; }
+        #side h1 { font-size: 18px; margin: 0 0 8px; }
+        #side input, #side select { width: 100%; padding: 6px; margin-bottom: 6px; }
+        #count { font-size: 13px; color: #666; }
+        #list { flex: 1; overflow-y: auto; margin: 0; padding: 0; list-style: none; }
+        #list li { padding: 8px 12px; border-bottom: 1px solid #eee; cursor: pointer; }
+        #list li:hover { background: #f3f7ff; }
+        #list li small { color: #888; }
+        #map { flex: 1; }
+        @media (max-width: 700px) {
+            body { flex-direction: column; }
+            #side { width: 100%; height: 45vh; border-right: none; border-bottom: 1px solid #ddd; }
+        }
+    </style>
+</head>
+<body>
+    <div id="side">
+        <header>
+            <h1>제주 관광지 지도</h1>
+            <input id="q" placeholder="이름 검색 (예: 오름, 해변)">
+            <select id="area"><option value="">전체 지역</option></select>
+            <select id="indoor">
+                <option value="">실내 + 야외</option>
+                <option value="true">실내만</option>
+                <option value="false">야외만</option>
+            </select>
+            <div id="count"></div>
+        </header>
+        <ul id="list"></ul>
+    </div>
+    <div id="map"></div>
+
+    <script>
+        // 1. 지도 만들기 (가운데 = 제주도)
+        const map = L.map("map").setView([33.38, 126.55], 10)
+
+        // 2. OpenStreetMap 타일 깔기
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            maxZoom: 19,
+            attribution: "&copy; OpenStreetMap contributors"
+        }).addTo(map)
+
+        // JSON에는 좌표가 없으므로 지역마다 대략적인 중심 좌표를 직접 정해둔다
+        const areaCenter = {
+            "동쪽(성산)": [33.45, 126.90],
+            "동쪽(구좌)": [33.52, 126.83],
+            "제주시":     [33.48, 126.50],
+            "서쪽(한림)": [33.40, 126.27],
+            "서쪽(안덕)": [33.26, 126.35],
+            "서귀포":     [33.27, 126.60]
+        }
+
+        let spots = []                       // JSON의 spots 배열
+        const markers = L.layerGroup().addTo(map)
+
+        // 3. JSON 꺼내기
+        fetch("../jeju_spots.json")
+            .then(res => res.json())
+            .then(data => {
+                spots = data.spots
+
+                // 지역 선택 상자 채우기
+                for (const a of data.areas) {
+                    document.querySelector("#area").innerHTML += `<option>${a}</option>`
+                }
+
+                // 지역별 개수를 원으로 표시
+                for (const a of data.areas) {
+                    const n = spots.filter(s => s.area === a).length
+                    L.circleMarker(areaCenter[a], { radius: 8 + n / 4, color: "#2b6cb0", fillOpacity: 0.25 })
+                        .addTo(map)
+                        .bindTooltip(`${a} · ${n}곳`, { permanent: true, direction: "center" })
+                        .on("click", () => { document.querySelector("#area").value = a; render() })
+                }
+
+                render()
+            })
+            .catch(err => {
+                document.querySelector("#count").textContent = "JSON을 못 불러왔어요: 로컬 서버로 열어주세요 (" + err + ")"
+            })
+
+        // 4. 검색/필터 결과를 목록에 그리기
+        function render() {
+            const q = document.querySelector("#q").value.trim()
+            const area = document.querySelector("#area").value
+            const indoor = document.querySelector("#indoor").value
+
+            const result = spots.filter(s =>
+                (q === "" || s.name.includes(q) || s.type.includes(q)) &&
+                (area === "" || s.area === area) &&
+                (indoor === "" || String(s.indoor) === indoor)
+            )
+
+            document.querySelector("#count").textContent = `${result.length}곳`
+            const list = document.querySelector("#list")
+            list.innerHTML = ""
+            for (const s of result) {
+                const li = document.createElement("li")
+                li.innerHTML = `${s.name}<br><small>${s.area} · ${s.type} · ${s.indoor ? "실내" : "야외"}</small>`
+                li.onclick = () => showSpot(s)
+                list.appendChild(li)
+            }
+        }
+
+        // 5. 장소를 클릭하면 OpenStreetMap(Nominatim)에서 좌표를 찾아 마커 찍기
+        const cache = {}
+        async function showSpot(s) {
+            if (!cache[s.name]) {
+                const url = "https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=kr"
+                    + "&viewbox=126.1,33.6,127.0,33.1&bounded=1&q=" + encodeURIComponent(s.name)
+                const found = await fetch(url).then(res => res.json())
+                cache[s.name] = found.length > 0 ? [Number(found[0].lat), Number(found[0].lon)] : null
+            }
+
+            markers.clearLayers()
+            const pos = cache[s.name]
+            const info = `<b>${s.name}</b><br>${s.area} · ${s.type} · ${s.indoor ? "실내" : "야외"}`
+            if (pos) {
+                L.marker(pos).addTo(markers).bindPopup(info).openPopup()
+                map.setView(pos, 14)
+            } else {
+                // 좌표를 못 찾으면 지역 중심에 표시
+                L.marker(areaCenter[s.area]).addTo(markers)
+                    .bindPopup(info + "<br><small>(정확한 위치를 못 찾아 지역 중심에 표시)</small>").openPopup()
+                map.setView(areaCenter[s.area], 11)
+            }
+        }
+
+        document.querySelector("#q").oninput = render
+        document.querySelector("#area").onchange = render
+        document.querySelector("#indoor").onchange = render
+    </script>
+</body>
+</html>

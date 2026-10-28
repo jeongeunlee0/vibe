@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>화면 부품 지도</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: sans-serif; margin: 0; padding: 2rem 1rem; background: #eceef2; color: #222; }
+    h1 { font-size: 1.3rem; text-align: center; margin: 0 0 .3rem; }
+    .sub { text-align: center; color: #666; font-size: .9rem; margin-bottom: 1.5rem; }
+
+    .wrap { max-width: 900px; margin: 0 auto; }
+    .item { display: flex; align-items: center; gap: .8rem; margin-bottom: 1rem; }
+    .item > .mock { flex: 1; min-width: 0; outline: 2px dashed #e0457b; outline-offset: 4px; border-radius: 4px; }
+    .tag { flex: 0 0 150px; background: #e0457b; color: #fff; font-size: .8rem; padding: .35rem .7rem; border-radius: 999px; line-height: 1.3; }
+    .tag small { display: block; opacity: .85; font-size: .7rem; }
+    .tag::before { content: "◀ "; }
+    .tag.blue { background: #2a6df4; }
+    .tag.green { background: #1a8a3c; }
+
+    /* index.html 부품 모양 재현 (제주 특산물 홍보관) */
+    .m-header { background: linear-gradient(135deg, #ff9f1c, #ff7b00); color: #fff; text-align: center; padding: 1.4rem 1rem; border-radius: 12px; }
+    .m-header h3 { margin: 0 0 .3rem; font-size: 1.3rem; }
+    .m-header p { margin: 0; font-size: .85rem; }
+    .m-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; background: #fff; padding: .6rem; border-radius: 12px; }
+    .m-nav a { background: #e6f3e8; color: #2f6f3e; font-weight: bold; font-size: .85rem; padding: .4rem .9rem; border-radius: 999px; outline: 2px dashed #1a8a3c; outline-offset: 2px; }
+    .m-card { background: #fff; border-radius: 12px; padding: 1rem 1.2rem; box-shadow: 0 2px 6px rgba(0,0,0,.08); }
+    .m-card h4 { margin: 0 0 .6rem; color: #2f6f3e; }
+    .m-card p, .m-card li { margin: .2rem 0; font-size: .85rem; }
+    .m-card ul { margin: 0; padding-left: 1.2rem; }
+    .m-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; }
+    .m-grid div { border: 1px solid #e3ebe2; border-radius: 8px; background: #fbfdfb; padding: .5rem; font-size: .8rem; }
+    .m-like { width: 100%; border: 0; background: #ffe3e8; color: #d6336c; padding: .5rem; border-radius: 999px; font-size: .95rem; cursor: pointer; }
+    .m-search { display: flex; gap: .5rem; margin-bottom: .5rem; }
+    .m-search input { flex: 1; min-width: 0; padding: .5rem .7rem; border: 1px solid #c9d1d9; border-radius: 8px; font-size: .9rem; }
+    .m-search button { padding: .5rem 1rem; border: 0; border-radius: 8px; background: #2f6f3e; color: #fff; cursor: pointer; }
+    .m-photo { height: 90px; border-radius: 10px; background: #dde3ea; display: flex; align-items: center; justify-content: center; color: #667; font-size: .85rem; }
+    .m-footer { background: #2f6f3e; color: #e6f3e8; text-align: center; padding: 1rem; border-radius: 12px; font-size: .85rem; }
+    .m-float { display: flex; gap: 1rem; align-items: center; justify-content: center; padding: .8rem; border-radius: 12px; background: #fff; }
+    .m-round { width: 84px; height: 84px; border-radius: 50%; background: #1f3a5f; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: .75rem; font-weight: bold; text-align: center; line-height: 1.3; }
+    .m-chatbtn { border-radius: 999px; background: #ff7b00; color: #fff; padding: .6rem 1rem; font-weight: bold; font-size: .85rem; }
+    .pair { display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; align-items: start; margin-bottom: 1rem; }
+    .pair .item { margin-bottom: 0; flex-direction: column; align-items: stretch; }
+    .pair .item .tag { flex: none; align-self: flex-start; }
+    .pair .item .tag::before { content: "▲ "; }
+    .box-out { outline: 2px dashed #2a6df4; outline-offset: 3px; border-radius: 6px; }
+    .m-tabs { display: flex; gap: 4px; margin-bottom: .8rem; border-bottom: 2px solid #e6f3e8; }
+    .m-tabs .m-tab { border: 0; background: none; padding: .5rem .9rem; margin-bottom: -2px; border-bottom: 3px solid transparent; font-size: .9rem; font-weight: bold; color: #666; cursor: pointer; }
+    .m-tabs .m-tab[aria-selected="true"] { color: #2f6f3e; border-bottom-color: #2f6f3e; }
+    .tabs-out { outline: 2px dashed #7a4fd0; outline-offset: 3px; border-radius: 6px; margin-bottom: .8rem; }
+    .tag.purple { background: #7a4fd0; }
+
+    table { margin: 2rem auto 0; border-collapse: collapse; background: #fff; width: 100%; }
+    th, td { border: 1px solid #ddd; padding: .5rem .8rem; text-align: left; font-size: .9rem; }
+    .yes { color: #1a8a3c; font-weight: bold; }
+    .no { color: #999; }
+    @media (max-width: 720px) {
+      .item { flex-direction: column; align-items: stretch; }
+      .tag { flex: none; align-self: flex-start; }
+      .tag::before { content: "▲ "; }
+      .pair { grid-template-columns: 1fr; }
+      .m-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <h1>🧩 index.html 화면 부품 지도</h1>
+  <div class="sub">점선 = 실제 화면 부품 · 위에서 아래 순서는 index.html과 같습니다 (좋아요 버튼과 탭은 눌러 볼 수 있어요)</div>
+
+  <div class="wrap">
+    <div class="item">
+      <div class="mock m-header"><h3>🍊 제주 특산물 홍보관</h3><p>바람과 햇살, 바다가 키운 제주의 맛을 만나보세요</p></div>
+      <span class="tag">헤더<small>&lt;header&gt;</small></span>
+    </div>
+
+    <div class="item">
+      <div class="mock m-nav"><a>🛒 대표 특산물</a><a>📖 제주의 맛 이야기</a><a>📅 제철 달력</a><a>🖼️ 사진 검색</a></div>
+      <span class="tag green">목록<small>&lt;nav&gt; 링크 4개</small></span>
+    </div>
+
+    <div class="pair">
+      <div>
+        <div class="item" style="margin-bottom:1rem">
+          <div class="mock m-card">
+            <div class="tabs-out"><div class="m-tabs" role="tablist">
+              <button class="m-tab" id="mt1" role="tab" aria-selected="true">🛒 대표 특산물</button>
+              <button class="m-tab" id="mt2" role="tab" aria-selected="false">🖼️ 사진 검색</button>
+            </div></div>
+            <div id="mp1">
+              <h4>🛒 대표 특산물</h4>
+              <div class="m-grid"><div>🍊 감귤</div><div>🍋 한라봉</div><div>🐖 흑돼지</div><div>🐟 갈치</div><div>🍡 오메기떡</div><div>🥜 당근·감자·마늘</div></div>
+            </div>
+            <div id="mp2" hidden>
+              <h4>🖼️ 제주 사진 검색</h4>
+              <div class="m-search">
+                <span class="box-out" style="flex:1;display:flex"><input placeholder="검색어 입력 (예: jeju, tangerine)"></span>
+                <span class="box-out" style="display:flex"><button>검색</button></span>
+              </div>
+              <div class="m-photo">Pixabay 사진이 0.5초마다 한 장씩 넘어가요</div>
+              <p style="margin:.6rem 0 0;font-size:.8rem;color:#2a6df4">▲ 파란 점선: 입력창 1개 · 버튼 1개 (이 탭에서만 보여요)</p>
+            </div>
+          </div>
+          <span class="tag">카드<small>&lt;section&gt; 탭 2개로 화면 전환</small></span>
+          <span class="tag purple">탭 (눌러 보세요)<small>role="tablist" · 탭 2개</small></span>
+        </div>
+        <div class="item">
+          <div class="mock m-card">
+            <h4>📖 제주의 맛 이야기</h4>
+            <p>화산섬 제주의 토양과 따뜻한 바닷바람은…</p>
+            <ul><li>제철 시기를 확인하면 가장 맛있을 때…</li><li>선물용은 포장과 배송 기간을…</li></ul>
+          </div>
+          <span class="tag green">카드 · 목록<small>&lt;article&gt; ul/li 3개</small></span>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="mock m-card">
+          <h4>📅 제철 달력</h4>
+          <ul><li>🍊 11~1월 : 감귤</li><li>🍋 1~4월 : 한라봉</li><li>🐟 7~10월 : 갈치</li><li>🍡 연중 : 오메기떡</li></ul>
+          <p style="margin-top:.7rem"><span class="box-out" style="display:block"><button class="m-like" id="like">❤️ 좋아요 <span id="likeN">0</span></button></span></p>
+        </div>
+        <span class="tag">카드<small>&lt;aside&gt; 제철 달력</small></span>
+        <span class="tag blue">버튼<small>button#likeBtn</small></span>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="mock m-footer">© 2026 제주 특산물 홍보관</div>
+      <span class="tag">푸터<small>&lt;footer&gt;</small></span>
+    </div>
+
+    <div class="item">
+      <div class="mock m-float">
+        <span class="m-round"><span style="font-size:1.4rem">🧭</span>반응형<br>메뉴</span>
+        <span class="m-chatbtn">💬 에이전트와 채팅</span>
+      </div>
+      <span class="tag blue">버튼 2개<small>화면 아래에 떠 있음</small></span>
+    </div>
+
+    <table>
+      <tr><th>부품</th><th>index.html에 있나?</th><th>위치</th></tr>
+      <tr><td>헤더</td><td class="yes">있음</td><td>맨 위 주황색 카드</td></tr>
+      <tr><td>카드</td><td class="yes">있음 (3개)</td><td>탭이 들어 있는 section · 맛 이야기 article · 제철 달력 aside (+ header · nav · footer)</td></tr>
+      <tr><td>버튼</td><td class="yes">있음 (6개)</td><td>탭 버튼 2개, 좋아요, 검색(사진 검색 탭 안), 🧭 반응형 메뉴(둥근 링크), 💬 에이전트와 채팅</td></tr>
+      <tr><td>입력창</td><td class="yes">있음 (1개)</td><td>사진 검색 탭 안 검색어 input</td></tr>
+      <tr><td>탭</td><td class="yes">있음 (2개)</td><td>section 맨 위의 「🛒 대표 특산물」 · 「🖼️ 사진 검색」 — 누르면 같은 칸 안에서 화면이 바뀜</td></tr>
+      <tr><td>목록</td><td class="yes">있음</td><td>article의 ul/li 3개, aside의 ul/li 4개 (nav 링크 4개는 목록 태그가 아닌 a)</td></tr>
+    </table>
+  </div>
+
+  <script>
+    // 탭 흉내: 누르면 해당 화면만 보인다 (index.html의 탭과 같은 동작)
+    for (const [t, p] of [['mt1', 'mp1'], ['mt2', 'mp2']]) {
+      document.getElementById(t).addEventListener('click', () => {
+        for (const [t2, p2] of [['mt1', 'mp1'], ['mt2', 'mp2']]) {
+          document.getElementById(t2).setAttribute('aria-selected', t2 === t);
+          document.getElementById(p2).hidden = p2 !== p;
+        }
+      });
+    }
+
+    let n = 0;
+    document.getElementById('like').addEventListener('click', () => {
+      n++;
+      document.getElementById('likeN').textContent = n;
+    });
+  </script>
+</body>
+</html>

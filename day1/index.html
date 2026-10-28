@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>제주 귤 뽑기</title>
+  <style>
+    :root {
+      --sky-top: #bfe6f5;
+      --sky-bottom: #eaf8ff;
+      --grass: #8cc063;
+      --grass-dark: #6fa84a;
+      --ink: #3b2a1a;
+      --orange: #ff9f1c;
+      --orange-dark: #e07b00;
+      --card-bg: #fffaf0;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+      color: var(--ink);
+      background: linear-gradient(var(--sky-top), var(--sky-bottom) 60%, var(--grass) 60%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px;
+      overflow-x: hidden;
+    }
+    h1 { margin: 8px 0 2px; font-size: 1.8rem; }
+    .sub { margin: 0 0 8px; opacity: .75; }
+    .counter {
+      background: #fff;
+      border: 3px solid var(--orange);
+      border-radius: 999px;
+      padding: 6px 20px;
+      font-weight: bold;
+      font-size: 1.2rem;
+      box-shadow: 0 3px 0 var(--orange-dark);
+    }
+    .counter span { color: var(--orange-dark); font-size: 1.5rem; display: inline-block; }
+    .counter span.bump { animation: bump .3s; }
+    @keyframes bump { 50% { transform: scale(1.5); } }
+
+    .stage { width: min(420px, 100%); margin-top: 4px; }
+    svg { width: 100%; height: auto; display: block; overflow: visible; }
+    #tree { cursor: pointer; -webkit-tap-highlight-color: transparent; outline: none; }
+    #tree:focus-visible .crown { stroke: #fff; stroke-width: 4; }
+    #tree.shake { animation: shake .35s; transform-origin: 200px 380px; }
+    @keyframes shake {
+      25% { transform: rotate(-1.5deg); }
+      75% { transform: rotate(1.5deg); }
+    }
+    .orange { transition: transform .7s cubic-bezier(.5, 0, 1, .6), opacity .4s; }
+    .orange.fall { opacity: 1; }
+    .orange.hidden { opacity: 0; transition: none; }
+    .orange.grow { transition: opacity .8s; }
+
+    .card {
+      width: min(380px, 100%);
+      min-height: 150px;
+      background: var(--card-bg);
+      border: 3px dashed var(--orange);
+      border-radius: 18px;
+      padding: 16px 20px;
+      text-align: center;
+      box-shadow: 0 6px 16px rgba(0,0,0,.15);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 6px;
+    }
+    .card.pop { animation: pop .5s cubic-bezier(.2, 1.6, .4, 1); }
+    @keyframes pop { from { transform: scale(.3) rotate(-6deg); opacity: 0; } }
+    .jeju { font-size: 1.6rem; font-weight: bold; color: var(--orange-dark); }
+    .ko { font-size: 1.05rem; }
+    .hint { opacity: .65; }
+    .emoji { font-size: 1.6rem; }
+  </style>
+</head>
+<body>
+  <h1>🍊 제주 귤 뽑기</h1>
+  <p class="sub">귤나무를 눌러 보세요!</p>
+  <div class="counter">뽑은 귤 <span id="count">0</span>개</div>
+
+  <div class="stage">
+    <svg viewBox="0 0 400 440" aria-label="귤이 달린 귤나무">
+      <!-- 땅 -->
+      <ellipse cx="200" cy="405" rx="170" ry="26" fill="var(--grass-dark)"/>
+      <ellipse cx="200" cy="398" rx="165" ry="22" fill="var(--grass)"/>
+      <g id="tree" role="button" tabindex="0" aria-label="귤나무 (눌러서 귤 뽑기)">
+        <!-- 줄기 -->
+        <path d="M185 395 Q190 330 182 270 L218 270 Q210 330 217 395 Z" fill="#8a5a33"/>
+        <!-- 잎 -->
+        <g class="crown" fill="#3f9b4b" stroke="#2f7a3a" stroke-width="3">
+          <circle cx="200" cy="130" r="85"/>
+          <circle cx="130" cy="185" r="65"/>
+          <circle cx="270" cy="185" r="65"/>
+          <circle cx="200" cy="205" r="70"/>
+        </g>
+        <g fill="#56b560" opacity=".8">
+          <circle cx="165" cy="100" r="30"/>
+          <circle cx="240" cy="150" r="26"/>
+          <circle cx="110" cy="195" r="22"/>
+        </g>
+        <!-- 귤들 -->
+        <g id="oranges"></g>
+      </g>
+    </svg>
+  </div>
+
+  <div class="card" id="card" aria-live="polite">
+    <div class="emoji">🌳</div>
+    <div class="hint">나무를 누르면 귤이 톡! 떨어져요.<br>제주어 덕담 카드가 함께 나와요.</div>
+  </div>
+
+  <script>
+    const WISHES = [
+      ["혼저 옵서예", "어서 오세요"],
+      ["폭삭 속았수다", "수고 많으셨습니다"],
+      ["놀멍 쉬멍 갑서", "놀면서 쉬면서 가세요"],
+      ["복 하영 받읍서", "복 많이 받으세요"],
+      ["하영 먹읍서", "많이 드세요"],
+      ["고맙수다", "고맙습니다"],
+      ["사랑햄수다", "사랑합니다"],
+      ["아프지 맙서", "아프지 마세요"],
+      ["펜안히 갑서", "편안히 가세요"],
+      ["오널도 좋은 날 되십서", "오늘도 좋은 날 되세요"]
+    ];
+    const SPOTS = [
+      [200, 70], [160, 105], [245, 105], [120, 150], [200, 140], [280, 150],
+      [90, 205], [150, 195], [215, 190], [255, 215], [310, 200], [180, 235],
+      [125, 240], [290, 245]
+    ];
+    const GROUND_Y = 395;
+    const NS = "http://www.w3.org/2000/svg";
+    const oranges = document.getElementById("oranges");
+    const tree = document.getElementById("tree");
+    const card = document.getElementById("card");
+    const countEl = document.getElementById("count");
+    let count = 0, lastWish = -1;
+
+    const items = SPOTS.map(([x, y]) => {
+      const g = document.createElementNS(NS, "g");
+      g.setAttribute("class", "orange");
+      g.innerHTML =
+        `<circle cx="${x}" cy="${y}" r="15" fill="#ff9f1c" stroke="#e07b00" stroke-width="2.5"/>` +
+        `<ellipse cx="${x - 5}" cy="${y - 5}" rx="4" ry="3" fill="#fff" opacity=".5"/>` +
+        `<path d="M${x} ${y - 14} q6 -8 12 -4 q-6 8 -12 4z" fill="#2f7a3a"/>`;
+      oranges.appendChild(g);
+      return { g, y, free: true };
+    });
+
+    function pick() {
+      const free = items.filter(i => i.free);
+      if (!free.length) return;
+      const it = free[Math.floor(Math.random() * free.length)];
+      it.free = false;
+
+      tree.classList.remove("shake"); void tree.getBoundingClientRect();
+      tree.classList.add("shake");
+
+      const drop = GROUND_Y - it.y - 8 + Math.random() * 8;
+      it.g.classList.remove("grow");
+      it.g.style.transform = `translateY(${drop}px)`;
+      setTimeout(() => { it.g.style.opacity = 0; }, 1000);
+      setTimeout(() => {
+        it.g.classList.add("hidden");
+        it.g.style.transform = "";
+        void it.g.getBoundingClientRect();
+        it.g.classList.remove("hidden");
+        it.g.classList.add("grow");
+        it.g.style.opacity = 1;
+        it.free = true;
+      }, 4000);
+
+      count++;
+      countEl.textContent = count;
+      countEl.classList.remove("bump"); void countEl.offsetWidth; countEl.classList.add("bump");
+      showWish();
+    }
+
+    function showWish() {
+      let n;
+      do { n = Math.floor(Math.random() * WISHES.length); } while (n === lastWish);
+      lastWish = n;
+      const [jeju, ko] = WISHES[n];
+      card.innerHTML =
+        `<div class="emoji">🍊</div>` +
+        `<div class="jeju">${jeju}</div>` +
+        `<div class="ko">(${ko})</div>`;
+      card.classList.remove("pop"); void card.offsetWidth; card.classList.add("pop");
+    }
+
+    tree.addEventListener("click", pick);
+    tree.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(); }
+    });
+  </script>
+</body>
+</html>

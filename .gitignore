@@ -1,0 +1,13 @@
+# 개인 노트(비공개 폴더 포함) - 올리지 않음
+AI 부트캠프  Vault/
+
+# day1/day2의 기존 git 이력 백업 (되돌리려면 .git.bak -> .git)
+.git.bak/
+
+# 압축 파일, 비밀 값, 로컬 설정
+*.zip
+.env
+.env*.local
+.vercel
+.claude/
+node_modules/
