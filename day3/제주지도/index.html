@@ -67,7 +67,7 @@
         const markers = L.layerGroup().addTo(map)
 
         // 3. JSON 꺼내기
-        fetch("../jeju_spots.json")
+        fetch("jeju_spots.json")
             .then(res => res.json())
             .then(data => {
                 spots = data.spots
