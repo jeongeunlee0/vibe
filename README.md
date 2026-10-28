@@ -9,7 +9,7 @@ vibe/
 ├─ day2/                 2일차: 레이아웃·채팅·사진 검색 (자체 GitHub/Vercel 연결 유지)
 ├─ day3/                 3일차: JavaScript · JSON
 │   ├─ 교안/             수업 교안
-│   ├─ 실습/             연습 파일 (2~5.html)
+│   ├─ 실습/             연습 파일 (2·4·5.html)
 │   ├─ 실습_제주대본/    제주대 수업 때 받은 연습 파일 (1~3.html)
 │   └─ 제주지도/         Leaflet + OpenStreetMap 제주 관광지 지도 (index.html + jeju_spots.json)
 ├─ json꺼내기/           JSON 꺼내기 교안·연습장·과제
