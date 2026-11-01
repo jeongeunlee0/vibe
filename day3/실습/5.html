@@ -113,7 +113,7 @@
         let v=[]
         for (let index = 0; index < 100; index++) {//,index(초기값0) 부터 ++
             //1씩 증가시키는데 중간에 있는 조건식을 만족할떄 까지 반복한다 
-            v.push(i+1)
+            v.push(index+1) // 반복 변수 이름은 index (i 로 쓰면 '정의되지 않음' 오류)
         }
         const show = (id)=> console.log(id+ " 를 보여줘")
         for (const i of v) {
