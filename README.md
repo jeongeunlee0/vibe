@@ -35,6 +35,7 @@ vibe/
 | 4 | 돌하르방의 제주 텃밭 | https://day4-ten-theta.vercel.app | jeongeunlee0/day4 |
 | 5 | 제주상점 · 서귀포 길잡이 | https://day5-flax.vercel.app | jeongeunlee0/day5 |
 | 5 | 답사 스탬프 투어 (과제 2단계) | https://leejeongeun-step2.vercel.app | jeongeunlee0/leejeongeun-step2 |
+| 전체 | 포트폴리오 (결과물 모음) | https://portfolio-chi-roan-10.vercel.app | jeongeunlee0/portfolio |
 
 ## 따로 관리하는 저장소
 
