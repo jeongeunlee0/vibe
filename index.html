@@ -4,42 +4,119 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>vibe 실습 모음</title>
+  <meta name="description" content="제주대학교 AI콘텐츠 부트캠프 1기 실습 파일 목차">
   <style>
-    body { font-family: "Malgun Gothic", sans-serif; max-width: 720px; margin: 24px auto; padding: 0 16px; background: #fff; color: #222; }
-    h2 { margin-top: 28px; border-bottom: 1px solid #ddd; padding-bottom: 4px; }
-    li { margin: 4px 0; }
-    small { color: #777; }
+    :root { --bg: #f6f7f9; --card: #fff; --text: #1d2433; --muted: #667085; --line: #e4e7ec; --accent: #ef7a12; --link: #2463d9; --chip: #eef3fc; }
+    @media (prefers-color-scheme: dark) { :root { --bg: #0e1116; --card: #161b22; --text: #e6eaf0; --muted: #98a2b3; --line: #2a313c; --accent: #ffa24d; --link: #7aa7ff; --chip: #1c2533; } }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Pretendard", "Malgun Gothic", system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+    .wrap { max-width: 880px; margin: 0 auto; padding: 32px 16px 56px; }
+    header h1 { margin: 0; font-size: 1.7rem; letter-spacing: -.02em; }
+    header p { margin: 4px 0 0; color: var(--muted); }
+    .day { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; margin-top: 16px; }
+    .day h2 { margin: 0 0 10px; font-size: 1.1rem; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+    .day h2 b { color: var(--accent); }
+    .day h2 small { color: var(--muted); font-weight: 500; font-size: .85rem; }
+    h3 { margin: 12px 0 4px; font-size: .78rem; color: var(--muted); font-weight: 700; letter-spacing: .02em; }
+    ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 4px 16px; }
+    li { min-width: 0; }
+    a { color: var(--link); text-decoration: none; font-weight: 600; }
+    a:hover { text-decoration: underline; }
+    li span { color: var(--muted); font-size: .84rem; margin-left: 4px; }
+    .ext::after { content: " ↗"; font-weight: 400; }
+    .note { margin-top: 10px; font-size: .84rem; color: var(--muted); background: var(--chip); border-radius: 10px; padding: 8px 12px; }
+    footer { margin-top: 28px; color: var(--muted); font-size: .82rem; text-align: center; }
   </style>
 </head>
 <body>
-  <h1>vibe 실습 모음</h1>
+<div class="wrap">
+  <header>
+    <h1>vibe 실습 모음</h1>
+    <p>제주대학교 AI콘텐츠 부트캠프 1기 · 2026.10.26 – 11.4 · 날짜별 결과물 · 연습 · 교안</p>
+  </header>
 
-  <h2>day1 <small>첫 페이지</small></h2>
-  <ul><li><a href="day1/index.html">day1 첫 페이지</a></li></ul>
+  <section class="day">
+    <h2><b>DAY 1</b> 바이브코딩 기초 <small>첫 웹페이지</small></h2>
+    <h3>결과물</h3>
+    <ul>
+      <li><a href="day1/index.html">제주 귤 뽑기</a><span>귤나무 · 덕담 카드</span></li>
+      <li><a class="ext" href="https://study-nine-delta.vercel.app">배포 사이트</a><span>study</span></li>
+    </ul>
+  </section>
 
-  <h2>day2 <small>레이아웃 · 채팅 · 사진 검색</small></h2>
-  <ul>
-    <li><a href="day2/index.html">index</a></li>
-    <li><a href="day2/layout.html">layout</a></li>
-    <li><a href="day2/chat.html">chat</a></li>
-    <li><a href="day2/parts_map.html">parts_map</a></li>
-    <li><a href="day2/pixabay_slider.html">pixabay_slider</a></li>
-    <li><a href="day2/reactive.html">reactive</a></li>
-  </ul>
+  <section class="day">
+    <h2><b>DAY 2</b> UI 구성 · 제주 로컬 <small>레이아웃 · 채팅 · 사진 검색 · JavaScript</small></h2>
+    <h3>결과물</h3>
+    <ul>
+      <li><a href="day2/index.html">제주 특산물 홍보관</a></li>
+      <li><a href="day2/chat.html">특산물 길잡이 채팅</a><span>날씨 · 거리 · 제철 · 사진</span></li>
+      <li><a href="day2/layout.html">홍보관 전체 화면</a><span>layout</span></li>
+      <li><a class="ext" href="https://day2-psi-seven.vercel.app">배포 사이트</a><span>day2</span></li>
+    </ul>
+    <h3>연습</h3>
+    <ul>
+      <li><a href="day2/skeleton.html">HTML 뼈대</a></li>
+      <li><a href="day2/parts_map.html">화면 부품 지도</a></li>
+      <li><a href="day2/pixabay_slider.html">Pixabay 이미지 슬라이드</a></li>
+      <li><a href="day2/reactive.html">반응형 웹 예제</a></li>
+      <li><a href="day2/javascript/1.html">JS 1</a><span>버튼</span></li>
+      <li><a href="day2/javascript/3.html">JS 3</a><span>사칙연산 버튼</span></li>
+      <li><a href="day2/javascript/4.html">JS 4</a><span>사칙연산 · 마우스 올리기</span></li>
+      <li><a href="day2/javascript/5.html">JS 5</a><span>덧셈 버튼</span></li>
+      <li><a href="day2/javascript/6.html">JS 6</a><span>사칙연산 (+ − × %)</span></li>
+      <li><a href="day2/javascript/7.html">JS 7</a><span>반복문</span></li>
+      <li><a href="day2/javascript/10.html">JS 10</a><span>특산물 장바구니</span></li>
+      <li><a href="day2/javascript/10_animation.html">JS 10 해설</a><span>이벤트 · 함수 · 객체</span></li>
+      <li><a href="day2/jason/a.html">화살표 함수</a><span>jason/a</span></li>
+    </ul>
+  </section>
 
-  <h2>day3 <small>JavaScript · JSON</small></h2>
-  <ul>
-    <li><a href="day3/제주지도/index.html">제주 관광지 지도 (Leaflet + OpenStreetMap)</a></li>
-    <li><a href="day3/교안/DAY05_학생용_교안.html">DAY05 학생용 교안</a></li>
-    <li>실습: <a href="day3/실습/2.html">2</a> · <a href="day3/실습/4.html">4</a> · <a href="day3/실습/5.html">5</a></li>
-    <li>제주대본 실습: <a href="day3/실습_제주대본/1.html">1</a> · <a href="day3/실습_제주대본/2.html">2</a> · <a href="day3/실습_제주대본/3.html">3</a></li>
-  </ul>
+  <section class="day">
+    <h2><b>DAY 3</b> JavaScript · JSON <small>데이터 · 지도 · 과제</small></h2>
+    <h3>결과물</h3>
+    <ul>
+      <li><a href="day3/과제_제출/index.html">제주 멍때리기 좋은 명소</a><span>과제</span></li>
+      <li><a href="day3/제주지도/index.html">제주 관광지 지도</a><span>Leaflet · OSM</span></li>
+      <li><a class="ext" href="https://jeju-spots-project.vercel.app">과제 배포 사이트</a></li>
+    </ul>
+    <h3>연습 · 교안</h3>
+    <ul>
+      <li><a href="day3/jeju-base-data.html">제주 데이터 주제별 예제</a><span>JSON · Key · Value</span></li>
+      <li><a href="day3/교안/DAY05_학생용_교안.html">DAY05 학생용 교안</a></li>
+      <li>실습 <a href="day3/실습/2.html">2</a> · <a href="day3/실습/4.html">4</a> · <a href="day3/실습/5.html">5</a><span>반복문</span></li>
+      <li>제주대본 <a href="day3/실습_제주대본/1.html">1</a> · <a href="day3/실습_제주대본/2.html">2</a> · <a href="day3/실습_제주대본/3.html">3</a><span>반복문</span></li>
+    </ul>
+    <h3>JSON 꺼내기 실습 데이</h3>
+    <ul>
+      <li><a href="json꺼내기/JSON꺼내기_학생용_교안.html">학생용 교안</a></li>
+      <li><a href="json꺼내기/JSON꺼내기_강사용_교안.html">강사용 교안</a></li>
+      <li><a href="json꺼내기/JSON꺼내기_연습장.html">연습장</a></li>
+      <li><a href="json꺼내기/과제_JSON꺼내기_학생용.html">개인 과제</a></li>
+      <li><a href="json꺼내기/과제_JSON꺼내기_채점기_강사용.html">과제 채점기</a><span>강사용</span></li>
+    </ul>
+  </section>
 
-  <h2>json꺼내기 <small>교안 · 연습 · 과제</small></h2>
-  <ul>
-    <li><a href="json꺼내기/JSON꺼내기_학생용_교안.html">학생용 교안</a></li>
-    <li><a href="json꺼내기/JSON꺼내기_연습장.html">연습장</a></li>
-    <li><a href="json꺼내기/과제_JSON꺼내기_학생용.html">과제 (학생용)</a></li>
-  </ul>
+  <section class="day">
+    <h2><b>DAY 4</b> AI 텍스트 · 이미지 <small>3D 게임 · 지형 영상</small></h2>
+    <ul>
+      <li><a class="ext" href="https://day4-ten-theta.vercel.app">돌하르방의 제주 텃밭</a><span>three.js 게임</span></li>
+      <li><a class="ext" href="https://day4-ten-theta.vercel.app/jeju_game_steps/step1.html">단계별 실습 step 1</a><span>~ step 9</span></li>
+      <li><a class="ext" href="https://day4-ten-theta.vercel.app/universe.html">Universe</a><span>three.js</span></li>
+    </ul>
+    <p class="note">DAY 4는 별도 저장소(day4)와 Vercel 프로젝트로 관리해요.</p>
+  </section>
+
+  <section class="day">
+    <h2><b>DAY 5</b> 제주 관광 안내 AI Agent <small>쇼핑몰 · 에이전트 · 과제</small></h2>
+    <ul>
+      <li><a class="ext" href="https://day5-flax.vercel.app">제주상점</a><span>쇼핑몰</span></li>
+      <li><a class="ext" href="https://day5-flax.vercel.app/guide.html">서귀포 길잡이</a><span>AI 에이전트</span></li>
+      <li><a class="ext" href="https://leejeongeun-step2.vercel.app">답사 스탬프 투어</a><span>과제 2단계</span></li>
+    </ul>
+    <p class="note">DAY 5는 별도 저장소(day5 · leejeongeun-step2)와 Vercel 프로젝트로 관리해요.</p>
+  </section>
+
+  <footer>제주대학교 청년도약 인재양성 부트캠프 · AI콘텐츠 1기</footer>
+</div>
 </body>
 </html>
